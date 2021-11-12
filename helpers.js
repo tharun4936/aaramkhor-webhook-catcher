@@ -7,7 +7,6 @@ const { SPREADSHEET_ID, TRACKING_LINK } = process.env;
 
 export const populateFillingSheet = async function (doc, data) {
     try {
-        await doc.loadInfo()
         const workspaceSheet = doc.sheetsByTitle[process.env.FILLING_SHEET_NAME];
         let items = "";
         let itemsQuant = "";
