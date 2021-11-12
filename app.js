@@ -63,3 +63,9 @@ app.post('/webhooks/sms/status/fallback', function (req, res) {
 app.listen(port, function () {
     console.log("Server is running at port " + port);
 })
+
+app.use(function (req, res, next) {
+    res.status(404);
+    res.send("Error 404. Page Not Found:(");
+    next();
+})
