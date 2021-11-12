@@ -7,7 +7,13 @@ const { SPREADSHEET_ID, TRACKING_LINK } = process.env;
 
 export const populateFillingSheet = async function (doc, data) {
     try {
+        await doc.loadInfo();
         const workspaceSheet = doc.sheetsByTitle[process.env.FILLING_SHEET_NAME];
+        const rows = await workspaceSheet.getRows();
+        const noOfRows = rows.length;
+
+        if (data.order_id <= rows[noOfRows - 1].Order_Number) throw new Error('Order Already Exists!');
+
         let items = "";
         let itemsQuant = "";
         for (let i = 0; i < data.items.length; i++) {
