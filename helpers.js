@@ -12,7 +12,7 @@ export const populateFillingSheet = async function (doc, data) {
         const rows = await workspaceSheet.getRows();
         const noOfRows = rows.length;
 
-        if (data.order_id <= rows[noOfRows - 1].Order_Number) throw new Error('Order Already Exists!');
+        if (noOfRows > 0 && data.order_id <= rows[noOfRows - 1].Order_Number) throw new Error('Order Already Exists!');
 
         let items = "";
         let itemsQuant = "";
@@ -57,9 +57,12 @@ export const getRawOrdersData = function (requestBody) {
         if (requestBody.contact_email) contact_email = requestBody.contact_email;
         else contact_email = "Not Provided!"
 
-        const name = shipping_address.name
+        const name = shipping_address.name;
 
-        if (shipping_address.phone) phone = shipping_address.phone
+        if (shipping_address.phone) {
+            phone = shipping_address.phone.replace(/ /g, '').slice(-10);
+            console.log(phone);
+        }
         else phone = "Not Provided!";
 
         const dateArr = created_at.split('T')[0].split('-');

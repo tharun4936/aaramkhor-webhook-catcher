@@ -9,12 +9,13 @@ app.use(express.json())
 
 app.post('/webhooks/orders/created', async function (req, res) {
     try {
-        const data = getRawOrdersData(req.body)
         const doc = await googleSpreadsheetInit();
-        await populateFillingSheet(doc, data);
+        const data = getRawOrdersData(req.body)
         res.status(200).send();
+        await populateFillingSheet(doc, data);
     } catch (err) {
-        res.status(404).send();
+        console.log(err)
+        res.status(404).send({ error: err.message });
     }
 
 })
@@ -26,8 +27,8 @@ app.post('/webhooks/orders/fulfilled', async function (req, res) {
         console.log(data);
         res.status(200).send()
     } catch (err) {
-        console.log(err.message)
-        res.status(404).send(err)
+        console.log(err)
+        res.status(404).send(err.message)
     }
 })
 
@@ -36,6 +37,8 @@ app.post('/webhooks/sms/incoming', function (req, res) {
         console.log(req);
         res.status(200).send()
     } catch (err) {
+        console.log(err);
+        res.status(400).send({ error: err.message })
 
     }
 })
@@ -46,7 +49,8 @@ app.post('/webhooks/sms/status', function (req, res) {
         res.status(200).send()
 
     } catch (err) {
-
+        console.log(err)
+        res.status(400).send({ error: err.message })
     }
 })
 
@@ -56,7 +60,8 @@ app.post('/webhooks/sms/status/fallback', function (req, res) {
         res.status(200).send()
 
     } catch (err) {
-
+        console.log(err)
+        res.status(400).send({ error: err.message })
     }
 })
 
