@@ -59,10 +59,7 @@ export const getRawOrdersData = function (requestBody) {
 
         const name = shipping_address.name;
 
-        if (shipping_address.phone) {
-            phone = shipping_address.phone.replace(/ /g, '').slice(-10);
-            console.log(phone);
-        }
+        if (shipping_address.phone) phone = shipping_address.phone.replace(/ /g, '').slice(-10);
         else phone = "Not Provided!";
 
         const dateArr = created_at.split('T')[0].split('-');
