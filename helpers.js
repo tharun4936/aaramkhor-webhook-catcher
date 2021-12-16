@@ -94,7 +94,7 @@ export const getRawOrdersData = function (requestBody) {
             }
             const order_value = item.price;
 
-            items.push({ order: item.title, quantity: item.quantity, color, size, sku_id, order_value, design})
+            items.push({ order: item.title, quantity: item.quantity, color, size, sku_id, order_value, design, payment_mode})
         });
         const result = {
             order_id,
@@ -102,7 +102,6 @@ export const getRawOrdersData = function (requestBody) {
             name,
             items,
             pincode, 
-            payment_mode,
             contact_email,
             phone,
             created_at: `${date} : ${time}`
