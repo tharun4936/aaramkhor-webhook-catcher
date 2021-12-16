@@ -17,10 +17,7 @@ export const populateFillingSheet = async function (doc, data) {
         // let items = "";
         // let itemsQuant = "";
         for (let i = 0; i < data.items.length; i++) {
-            // items += data.items[i].order;
-            // items += ' ~ ';
-            // itemsQuant += String(data.items[i].quantity);
-            // itemsQuant += ' ~ '
+
             await workspaceSheet.addRow({
                 Order_Number: data.order_id,
                 Order: data.items[i].order,
@@ -29,9 +26,9 @@ export const populateFillingSheet = async function (doc, data) {
                 Customer_Phone: String(data.phone),
                 Customer_Email: data.contact_email,
                 Tracking_Number: '',
+                Expected_Shipping_Date: '',
                 Created_At: data.created_at,
                 Tracking_Link: TRACKING_LINK,
-                Expected_Shipping_Date: '',
                 SKU_ID:data.items[i].sku_id,
                 Design: data.items[i].design,
                 Color: data.items[i].color,
