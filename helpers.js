@@ -14,27 +14,36 @@ export const populateFillingSheet = async function (doc, data) {
 
         if (noOfRows > 0 && data.order_id <= rows[noOfRows - 1].Order_Number) throw new Error('Order Already Exists!');
 
-        let items = "";
-        let itemsQuant = "";
+        // let items = "";
+        // let itemsQuant = "";
         for (let i = 0; i < data.items.length; i++) {
-            items += data.items[i].order;
-            items += ' ~ ';
-            itemsQuant += String(data.items[i].quantity);
-            itemsQuant += ' ~ '
+            // items += data.items[i].order;
+            // items += ' ~ ';
+            // itemsQuant += String(data.items[i].quantity);
+            // itemsQuant += ' ~ '
+            await workspaceSheet.addRow({
+                Order_Number: data.order_id,
+                Order: data.items[i].order,
+                Order_Quantity: data.items[i].quantity,
+                Customer_Name: data.name,
+                Customer_Phone: String(data.phone),
+                Customer_Email: data.contact_email,
+                Tracking_Number: '',
+                Created_At: data.created_at,
+                Tracking_Link: TRACKING_LINK,
+                Expected_Shipping_Date: '',
+                SKU_ID:data.items[i].sku_id,
+                Design: data.items[i].design,
+                Color: data.items[i].color,
+                Size: data.items[i].size,
+                Address: data.address,
+                Pincode: data.pincode,
+                Payment_Mode:data.payment_mode,
+                Order_Value: data.items[i].order_value
+            })
         }
-        items = items.slice(0, -2);
-        itemsQuant = itemsQuant.slice(0, -2)
-        await workspaceSheet.addRow({
-            Order_Number: data.order_id,
-            Order: items,
-            Order_Quantity: itemsQuant,
-            Customer_Name: data.name,
-            Customer_Phone: String(data.phone),
-            Customer_Email: data.contact_email,
-            Tracking_Number: '',
-            Created_At: data.created_at,
-            Tracking_Link: TRACKING_LINK
-        })
+        // items = items.slice(0, -2);
+        // itemsQuant = itemsQuant.slice(0, -2)
 
     } catch (err) {
         throw err;
@@ -46,9 +55,13 @@ export const getRawOrdersData = function (requestBody) {
         let contact_email;
         let phone;
         let order_id;
+        let payment_mode;
         const items = [];
 
         const { line_items, shipping_address, created_at } = requestBody;
+        const address = shipping_address.address1;
+        const pincode = shipping_address.zip;
+
         if (requestBody.customer.last_order_name)
             order_id = requestBody.customer.last_order_name.slice(1);
         else
@@ -67,18 +80,38 @@ export const getRawOrdersData = function (requestBody) {
         const time = created_at.split('T')[1];
 
         line_items.forEach(item => {
-            items.push({ order: item.title, quantity: item.quantity })
-        });
+            let size, design, color;
+            const variant_title = item.variant_title.split('/').map(str => str.trim());
+            const sku_id = item.sku;
+            if(!item.sku){
+                size = variant_title[0];
+                color = variant_title[1];
+                design  = 'Custom';
+                payment_mode = requestBody.processing_method;
+            }
+            else{
+                size = variant_title[1];
+                color = variant_title[0];
+                design = sku_id.split('_')[0].slice(-4);
+                payment_mode = variant_title[2];
+            }
+            const order_value = item.price;
 
-        return {
+            items.push({ order: item.title, quantity: item.quantity, color, size, sku_id, order_value, design})
+        });
+        const result = {
             order_id,
+            address,
             name,
             items,
+            pincode, 
+            payment_mode,
             contact_email,
             phone,
             created_at: `${date} : ${time}`
         }
-
+        console.log(result);
+        return result;
     } catch (err) {
         throw err;
     }

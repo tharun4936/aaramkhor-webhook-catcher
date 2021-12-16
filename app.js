@@ -10,6 +10,7 @@ app.use(express.json())
 app.post('/webhooks/orders/created', async function (req, res) {
     try {
         const doc = await googleSpreadsheetInit();
+        console.log(req.body);
         const data = getRawOrdersData(req.body)
         res.status(200).send();
         await populateFillingSheet(doc, data);
