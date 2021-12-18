@@ -35,7 +35,7 @@ export const populateFillingSheet = async function (doc, data) {
                 Size: data.items[i].size,
                 Address: data.address,
                 Pincode: data.pincode,
-                Payment_Mode:data.payment_mode,
+                Payment_Mode: data.items[i].payment_mode,
                 Order_Value: data.items[i].order_value
             })
         }
@@ -90,7 +90,7 @@ export const getRawOrdersData = function (requestBody) {
                 size = variant_title[1];
                 color = variant_title[0];
                 design = sku_id.split('_')[0].slice(-4);
-                payment_mode = variant_title[2];
+                payment_mode = variant_title[2] || requestBody.payment_gateway_names[0];
             }
             const order_value = item.price;
 
