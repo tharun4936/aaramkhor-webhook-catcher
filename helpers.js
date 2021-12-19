@@ -92,6 +92,10 @@ export const getRawOrdersData = function (requestBody) {
                 design = sku_id.split('_')[0].slice(-4);
                 payment_mode = variant_title[2] || requestBody.payment_gateway_names[0];
             }
+
+            if(payment_mode.includes('COD')) payment_mode = 'COD';
+            else payment_mode = 'Prepaid';
+            
             const order_value = item.price;
 
             items.push({ order: item.title, quantity: item.quantity, color, size, sku_id, order_value, design, payment_mode})
