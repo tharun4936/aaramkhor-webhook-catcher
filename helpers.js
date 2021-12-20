@@ -56,7 +56,7 @@ export const getRawOrdersData = function (requestBody) {
         const items = [];
 
         const { line_items, shipping_address, created_at } = requestBody;
-        const address = shipping_address.address1;
+        const address = shipping_address.address1 + ',' + shipping_address.address2;
         const pincode = shipping_address.zip;
 
         if (requestBody.customer.last_order_name)
